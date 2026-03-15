@@ -38,7 +38,7 @@ async def read_root():
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>RPG-DiffusionMaster</title>
+        <title>IterComp</title>
         <style>
             body { font-family: 'Segoe UI', sans-serif; padding: 20px; max-width: 1500px; margin: 0 auto; }
             .control-group { margin-bottom: 20px; display: flex; gap: 10px; }
@@ -58,7 +58,7 @@ async def read_root():
         </style>
     </head>
     <body>
-        <h1>RPG-DiffusionMaster Demo</h1>
+        <h1>IterComp Demo</h1>
         
         <div class="control-group">
             <input type="text" id="rawPrompt" placeholder="Nhập ý tưởng ...">
@@ -69,7 +69,7 @@ async def read_root():
         <textarea id="refinedPrompt" readonly></textarea>
         <div class="image-container">
             <div class="image-box">
-                <h3>IterComp (RPG included while training)</h3>
+                <h3>IterComp </h3>
                 <p id="loading-iter-legacy" class="loading">Đang vẽ...</p>
                 <img id="img-iter-legacy" />
             </div>
