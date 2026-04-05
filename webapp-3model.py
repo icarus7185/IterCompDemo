@@ -8,7 +8,7 @@ from mllm import GPT5
 import torch
 from pydantic import BaseModel
 
-gpt_token = "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"
+gpt_token = "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"
 hf_cache_dir = "/workspace/my_models/cache"
 
 app = FastAPI()
@@ -57,38 +57,24 @@ async def read_root():
             <button id="btnGen" onclick="runWorkflow()">Generate</button>
         </div>
 
+        <div style="display:none">
         <label>Prompt đã xử lý:</label>
         <textarea id="refinedPrompt" readonly></textarea>
+        </div>
+        
         <div class="image-container">
             <div class="image-box">
                 <h3>SDXL-Turbo</h3>
-                <p id="loading-sdxl-legacy" class="loading">Đang vẽ...</p>
-                <img id="img-sdxl-legacy" />
-            </div>
-            <div class="image-box">
-                <h3>Playground v2</h3>
-                <p id="loading-playg-legacy" class="loading">Đang vẽ...</p>
-                <img id="img-playg-legacy" />
-            </div>
-            <div class="image-box">
-                <h3>IterComp</h3>
-                <p id="loading-iter-legacy" class="loading">Đang vẽ...</p>
-                <img id="img-iter-legacy" />
-            </div>
-        </div>
-        <div class="image-container">
-            <div class="image-box">
-                <h3>SDXL-Turbo + RPG</h3>
                 <p id="loading-sdxl" class="loading">Đang vẽ...</p>
                 <img id="img-sdxl" />
             </div>
             <div class="image-box">
-                <h3>Playground v2 + RPG</h3>
+                <h3>Playground v2</h3>
                 <p id="loading-playg" class="loading">Đang vẽ...</p>
                 <img id="img-playg" />
             </div>
             <div class="image-box">
-                <h3>IterComp + RPG</h3>
+                <h3>IterComp</h3>
                 <p id="loading-iter" class="loading">Đang vẽ...</p>
                 <img id="img-iter" />
             </div>
@@ -133,7 +119,7 @@ async def read_root():
                 refinedArea.value = "Processing...";
                 
                 // Ẩn ảnh cũ, hiện loading
-                ['sdxl', 'playg', 'sdxl-legacy', 'playg-legacy', 'iter', 'iter-legacy'].forEach(type => {
+                ['sdxl', 'playg', 'iter'].forEach(type => {
                     document.getElementById(`img-${type}`).style.display = 'none';
                     //document.getElementById(`loading-${type}`).style.display = 'block';
                     //document.getElementById(`loading-${type}`).innerText = 'Đang vẽ...';
@@ -153,16 +139,13 @@ async def read_root():
                     // mà gán nó vào biến Promise
 
                     // Ẩn ảnh cũ, hiện loading
-                    ['sdxl', 'playg', 'sdxl-legacy', 'playg-legacy', 'iter', 'iter-legacy'].forEach(type => {
+                    ['sdxl', 'playg', 'iter'].forEach(type => {
                         //document.getElementById(`img-${type}`).style.display = 'none';
                         document.getElementById(`loading-${type}`).style.display = 'block';
                         document.getElementById(`loading-${type}`).innerText = 'Đang vẽ...';
                     });
 
-                    const taskSDXLLegacy = await fetchAndShow('/api/SDXLLegacy', promptJson, 'img-sdxl-legacy', 'loading-sdxl-legacy');
-                    const taskPlaygLegacy = await fetchAndShow('/api/PlaygLegacy', promptJson, 'img-playg-legacy', 'loading-playg-legacy');
-                    const taskIterLegacy = await fetchAndShow('/api/IterCompLegacy', promptJson, 'img-iter-legacy', 'loading-iter-legacy');
-                    
+         
                     const taskSDXL = await fetchAndShow('/api/SDXL', promptJson, 'img-sdxl', 'loading-sdxl');
                     const taskPlayg = await fetchAndShow('/api/Playg', promptJson, 'img-playg', 'loading-playg');
                     const taskIter = await fetchAndShow('/api/IterComp', promptJson, 'img-iter', 'loading-iter');
@@ -273,42 +256,6 @@ async def generate_image3(promptData: PromptRequest):
     img_io = io.BytesIO()
     images.save(img_io, 'PNG')
     
-    # FastAPI trả về trực tiếp các bytes với định dạng image/png
-    return Response(content=img_io.getvalue(), media_type="image/png")
-
-@app.post("/api/PlaygLegacy")
-async def generate_image4(promptData: PromptRequest):
-    pipe4 = DiffusionPipeline.from_pretrained("playgroundai/playground-v2-512px-base", cache_dir=hf_cache_dir, torch_dtype=torch.float16, use_safetensors=True)
-    pipe4.to("cuda")
-
-    images = pipe4(prompt=promptData.prompt_en,width = 800,height = 800).images[0]
-    img_io = io.BytesIO()
-    images.save(img_io, 'PNG')
-    
-    # FastAPI trả về trực tiếp các bytes với định dạng image/png
-    return Response(content=img_io.getvalue(), media_type="image/png")
-    
-@app.post("/api/SDXLLegacy")
-async def generate_image5(promptData: PromptRequest):
-    pipe5 = DiffusionPipeline.from_pretrained("stabilityai/sdxl-turbo", cache_dir=hf_cache_dir, torch_dtype=torch.float16, use_safetensors=True)
-    pipe5.to("cuda")
-
-    images = pipe5(prompt=promptData.prompt_en,width = 800,height = 800).images[0]
-    img_io = io.BytesIO()
-    images.save(img_io, 'PNG')
-    
-    # FastAPI trả về trực tiếp các bytes với định dạng image/png
-    return Response(content=img_io.getvalue(), media_type="image/png")
-
-@app.post("/api/IterCompLegacy")
-async def generate_image6(promptData: PromptRequest):
-    pipe6 = DiffusionPipeline.from_pretrained("comin/IterComp", cache_dir=hf_cache_dir, torch_dtype=torch.float16, use_safetensors=True)
-    pipe6.to("cuda")
-
-    images = pipe6(prompt=promptData.prompt_en,width = 800,height = 800, num_inference_steps=50, base_ratio = 0.6).images[0]
-    img_io = io.BytesIO()
-    images.save(img_io, 'PNG')
- 
     # FastAPI trả về trực tiếp các bytes với định dạng image/png
     return Response(content=img_io.getvalue(), media_type="image/png")
 

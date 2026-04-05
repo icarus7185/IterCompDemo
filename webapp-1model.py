@@ -8,7 +8,7 @@ from mllm import GPT5
 import torch
 from pydantic import BaseModel
 
-gpt_token = "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"
+gpt_token = "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"
 hf_cache_dir = "/workspace/my_models/cache"
 
 app = FastAPI()

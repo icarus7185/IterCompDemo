@@ -18,10 +18,10 @@ python = 3.9   !important, version python khác chưa được test
 - nếu môi trường, kết nối tới huggingface (download model, chỉ download vào lần chạy đầu tiên) và gpt không có vấn đề sẽ sinh ra file 'test.png'
 
 ## Step 3: Chạy demo
-- Có 2 option: 1 hoặc 3 model, mỗi model chia làm 2 trường hợp có và không sử dụng RPG method để tăng cường chất lượng output
+- Có 2 thí nghiệm, so sánh IterComp với 2 model phổ biến khác, và thí nghiệm so sánh Itercomp thuần tuý với tăng cường bằng RPG
 - 3 model trong demo là SDXL-Turbo, Playground v2, IterComp
 
-#### Option 1: 3+3 model (SDXL-Turbo, Playground v2, IterComp)
+#### Option 1: 3 model (SDXL-Turbo, Playground v2, IterComp)
 do số lượng model lớn nên khi nhận được request mới bắt đầu load model vào memory, do đó thời gian phải hồi dài, nhất là lần chạy đầu tiên phải download model từ huggingface.
 
 ```uvicorn webapp-3model:app --host 0.0.0.0 --port 5000```
